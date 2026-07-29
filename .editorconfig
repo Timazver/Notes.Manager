@@ -1,0 +1,10 @@
+# Верхняя строка обязательна, чтобы IDE понимала, что это корень конфигурации
+root = true
+
+[*.cs]
+# Отступы
+indent_style = space
+indent_size = 4
+
+# Пример отключения конкретного правила Roslynator, если оно вам мешает
+dotnet_diagnostic.RCS1194.severity = none

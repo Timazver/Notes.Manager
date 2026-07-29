@@ -1,0 +1,88 @@
+name: CI/CD Pipeline
+run-name: Build and Deploy service to VPS by ${{ github.actor }}🚀
+on:
+  push:
+    branches:
+      - 'release'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: '83690f2ee502af46be6fe005566e7350'
+      JWT_EXPIRATION: 300
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup .Net environment
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0
+      - name: Check formatting
+        run:  dotnet format --verify-no-changes
+      - name: Run .Net analyze
+        run: dotnet build --no-incremental
+      - name: Run test
+        run: |
+          dotnet restore
+          dotnet build --configuration Release --no-restore
+          dotnet test --no-build
+  build-image:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: notes_api
+      USER_NAME: timazver
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Log in to the Container registry
+        uses: docker/login-action@v4.0.0
+        with:
+          registry: ${{env.REGISTRY}}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{env.USER_NAME}}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=sha
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build and push Docker Image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+  deploy-image:
+    needs: build-image
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    env:
+      VPS_ADDRESS: 89.167.6.142
+    steps:
+      - name: Deploy image via SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          
+          ssh-keyscan -H "${{ env.VPS_ADDRESS }}" >> ~/.ssh/known_hosts
+          
+          ssh deployer@${{ env.VPS_ADDRESS }} \
+          "${{ secrets.GHCR_PAT }}"
+
+
+
+
