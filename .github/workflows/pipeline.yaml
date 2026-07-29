@@ -36,7 +36,7 @@ jobs:
       contents: read
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: notes_api
+      IMAGE_NAME: notes_manager
       USER_NAME: timazver
     steps:
       - name: Checkout code
