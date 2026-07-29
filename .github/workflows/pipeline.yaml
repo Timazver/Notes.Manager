@@ -9,14 +9,16 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     env:
-      JWT_SECRET: '83690f2ee502af46be6fe005566e7350'
-      JWT_EXPIRATION: 300
+      JWT_SECRET: '8d54538a8af7388475862c0b544804c983fdb1c6241095e851ec894ba2cd4139'
+      JWT_EXPIRATION: 3600
     steps:
       - uses: actions/checkout@v6
       - name: setup .Net environment
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0
+      - name: Restore
+        run: dotnet restore
       - name: Check formatting
         run:  dotnet format --verify-no-changes
       - name: Run .Net analyze
