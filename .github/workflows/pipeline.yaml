@@ -20,7 +20,7 @@ jobs:
       - name: Restore
         run: dotnet restore
       - name: Check formatting
-        run:  dotnet format --verify-no-changes
+        run: dotnet format --verify-no-changes
       - name: Run .Net analyze
         run: dotnet build --no-incremental
       - name: Run test
@@ -37,6 +37,7 @@ jobs:
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: notes_manager
+      MIGRATOR_NAME: ef-bundle
       USER_NAME: timazver
     steps:
       - name: Checkout code
@@ -47,22 +48,36 @@ jobs:
           registry: ${{env.REGISTRY}}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract metadata for Docker
+      - name: Extract metadata for api
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ${{ env.REGISTRY }}/${{env.USER_NAME}}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest
+            type=sha
+      - name: Extract metadata for ef-bundle
+        id: bundle
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{env.USER_NAME}}/${{ env.MIGRATOR_NAME }}
+          tags: |
             type=sha
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
-
+      - name: Build EFBundler
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: bundle-exec
+          push: true
+          tags: ${{ steps.bundle.outputs.tags}}
+          labels: ${{ steps.bundle.outputs.labels }}
       - name: Build and push Docker Image
         uses: docker/build-push-action@v7
         with:
           context: .
           push: true
+          target: api-exec
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   deploy-image:
