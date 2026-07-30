@@ -98,7 +98,7 @@ jobs:
           ssh-keyscan -H "${{ env.VPS_ADDRESS }}" >> ~/.ssh/known_hosts
           
           ssh deployer@${{ env.VPS_ADDRESS }} \
-          "${{ secrets.GHCR_PAT }}"
+          "${{ secrets.GHCR_PAT }} ${{ github.sha }}"
 
 
 
