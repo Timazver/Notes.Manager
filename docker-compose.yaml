@@ -1,9 +1,28 @@
 services:
-  notes-api:
-    container_name: notes-api
+  notes-api-migrator:
+    container_name: ef-migration-bundle
     build:
       context: .
       dockerfile: ./Dockerfile
+      target: bundle-exec
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_HOST: host.docker.internal
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+  
+  notes-api:
+    container_name: notes-api
+    depends_on:
+      notes-api-migrator:
+        condition: service_completed_successfully
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: api-exec
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
@@ -14,6 +33,8 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
+      JWT_ISSUER: notes-api
+      JWT_AUDIENCE: notes-api-client
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       ADMIN_FIRST_NAME: ${ADMIN_FIRST_NAME}
