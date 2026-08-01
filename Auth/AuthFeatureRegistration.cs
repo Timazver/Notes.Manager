@@ -29,6 +29,8 @@ public static class AuthFeatureRegistration
             // Для обычных пользователей (или всех авторизованных)
             options.AddPolicy("UserOnly", policy =>
                 policy.RequireRole(Role.User.GetAuthority()));
+            options.AddPolicy("AdminOrUser", policy =>
+                policy.RequireRole(Role.User.GetAuthority(), Role.Admin.GetAuthority()));
         });
         services.AddScoped<JwtTokenService>();
         services.AddScoped<AuthService>();

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Notes.Manager.Auth.Dto;
 using Notes.Manager.Auth.Service;
-using Notes.Manager.Common;
+using Notes.Manager.Common.Network;
 
 namespace Notes.Manager.Auth.Controller;
 

@@ -13,4 +13,6 @@ public class NoteEntity
     public DateTimeOffset UpdatedAt { get; set; }
 
     public bool IsArchived { get; set; }
+
+    public long UserId { get; set; }
 }

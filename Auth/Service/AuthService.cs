@@ -40,6 +40,7 @@ public class AuthService(
             userCredentials.PasswordHash = passwordHasher.HashPassword(userCredentials, registerCommand.Password);
             dbContext.AuthCredentials.Add(userCredentials);
             await dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
         }
         catch (Exception)
         {
@@ -54,7 +55,7 @@ public class AuthService(
         if (userCredentials.User == null) throw new UserNotFoundException();
         var result = passwordHasher.VerifyHashedPassword(userCredentials, userCredentials.PasswordHash, password);
         return result == PasswordVerificationResult.Success
-            ? tokenService.GenerateToken(email)
+            ? tokenService.GenerateToken(userId: userCredentials.UserId, userCredentials.User.Role)
             : throw new InvalidCredentialException();
     }
 

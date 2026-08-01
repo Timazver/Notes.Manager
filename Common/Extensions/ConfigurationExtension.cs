@@ -1,4 +1,4 @@
-namespace Notes.Manager.Common;
+namespace Notes.Manager.Common.Extensions;
 
 public static class ConfigurationExtension
 {

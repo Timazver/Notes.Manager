@@ -1,3 +1,4 @@
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -8,10 +9,18 @@ public sealed class ApplicationDbContextFactory
 {
     public ApplicationDbContext CreateDbContext(string[] args)
     {
+        Env
+            .NoClobber()
+            .TraversePath()
+            .Load();
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true)
+            .AddEnvironmentVariables()
+            .Build();
+
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseNpgsql(
-                "Host=localhost;Port=5432;Database=notes_;" +
-                "Username=postgres;Password=postgres")
+            .UseNpgsql(DatabaseConnectionStringBuilder.Build(configuration))
             .Options;
 
         return new ApplicationDbContext(options);
