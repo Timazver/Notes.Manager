@@ -2651,11 +2651,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/tima/RiderProjects/WebApplication1/Notes.Manager/Notes.Manager.csproj",
+      "projectUniqueName": "/Users/tima/Development/projects/asp.net/Notes.Manager/Notes.Manager.csproj",
       "projectName": "Notes.Manager",
-      "projectPath": "/Users/tima/RiderProjects/WebApplication1/Notes.Manager/Notes.Manager.csproj",
+      "projectPath": "/Users/tima/Development/projects/asp.net/Notes.Manager/Notes.Manager.csproj",
       "packagesPath": "/Users/tima/.nuget/packages/",
-      "outputPath": "/Users/tima/RiderProjects/WebApplication1/Notes.Manager/obj/",
+      "outputPath": "/Users/tima/Development/projects/asp.net/Notes.Manager/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/tima/.nuget/NuGet/NuGet.Config"

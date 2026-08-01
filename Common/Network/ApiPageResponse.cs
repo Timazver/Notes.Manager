@@ -1,3 +1,3 @@
-namespace Notes.Manager.Common;
+namespace Notes.Manager.Common.Network;
 
 public sealed record ApiPageResponse<T>(List<T> Items, int Page, int Size, int TotalElements, int TotalPages);

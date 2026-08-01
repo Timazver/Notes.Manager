@@ -1,11 +1,13 @@
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using Notes.Manager.Admin.Bootstrap;
+using Notes.Manager.Admin;
 using Notes.Manager.Auth;
 using Notes.Manager.Auth.Config;
 using Notes.Manager.Common;
+using Notes.Manager.Common.Extensions;
 using Notes.Manager.Infra;
-using Npgsql;
+using Notes.Manager.Notes;
+using Notes.Manager.Users;
 
 Env
     .NoClobber()
@@ -16,10 +18,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddExceptionHandler<GlobalExceptionHandler>()
     .AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(BuildConnectionString(builder.Configuration)))
-    .AddAdminBootstrapFeature(builder.Configuration)
+        options.UseNpgsql(DatabaseConnectionStringBuilder.Build(builder.Configuration)))
+    .AddAdminFeature(builder.Configuration)
     .AddSingleton(BuildJwtOptionsFromEnv(builder.Configuration))
     .AddAuthFeature()
+    .AddNoteFeature()
+    .AddUsersFeature()
     .AddControllers();
 
 var app = builder.Build();
@@ -37,22 +41,4 @@ static JwtOptions BuildJwtOptionsFromEnv(IConfiguration configuration)
         configuration.GetRequiredEnv("JWT_SECRET"),
         int.Parse(configuration.GetRequiredEnv("JWT_EXPIRATION"))
     );
-}
-
-static string BuildConnectionString(IConfiguration configuration)
-{
-    var host = configuration.GetRequiredEnv("DB_HOST");
-    var port = int.Parse(configuration.GetRequiredEnv("DB_PORT"));
-    var database = configuration.GetRequiredEnv("DB_NAME");
-    var username = configuration.GetRequiredEnv("DB_USER");
-    var password = configuration.GetRequiredEnv("DB_PASS");
-
-    return new NpgsqlConnectionStringBuilder
-    {
-        Host = host,
-        Port = port,
-        Database = database,
-        Username = username,
-        Password = password
-    }.ConnectionString;
 }

@@ -1,4 +1,4 @@
-namespace Notes.Manager.Common;
+namespace Notes.Manager.Common.Network;
 
 public sealed record ApiResponse<T>(int Status, T? Data = default, string? Error = null);
 public static class ApiResponse

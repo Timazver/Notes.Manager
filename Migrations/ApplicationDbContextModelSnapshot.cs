@@ -76,7 +76,12 @@ namespace Notes.Manager.Migrations
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("notes", (string)null);
                 });
@@ -124,6 +129,15 @@ namespace Notes.Manager.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Notes.Manager.Notes.Domain.NoteEntity", b =>
+                {
+                    b.HasOne("Notes.Manager.Users.Domain.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Notes.Manager.Notes.Domain;
+using Notes.Manager.Users.Domain;
 
 namespace Notes.Manager.Infra.Configurations;
 
@@ -22,5 +23,9 @@ public class NoteConfiguration : IEntityTypeConfiguration<NoteEntity>
         builder.Property(n => n.IsArchived)
             .HasDefaultValue(false)
             .IsRequired();
+        builder.HasOne<UserEntity>()
+            .WithMany()
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
