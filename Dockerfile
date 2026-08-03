@@ -7,6 +7,11 @@ COPY . .
 RUN dotnet tool restore
 
 FROM base AS build-ef-bundle
+ENV DB_HOST=localhost \
+    DB_PORT=5432 \
+    DB_NAME=design_time \
+    DB_USER=design_time \
+    DB_PASS=design_time
 RUN dotnet ef migrations bundle --self-contained --target-runtime linux-amd64 --output /app/ef_bundle
 
 FROM base AS build-notes-api
