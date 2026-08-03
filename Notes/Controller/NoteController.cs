@@ -26,22 +26,22 @@ public class NotesController(NoteService noteService) : ControllerBase
         return ApiResponse.Success(note.ToResponseDto());
     }
     [HttpPost]
-    public async Task<IActionResult> GetNote([FromBody] CreateNoteDto body)
+    public async Task<IActionResult> AddNote([FromBody] CreateNoteDto body)
     {
         await noteService.AddNote(body.Title, body.Content, User.GetUserId());
         return StatusCode(StatusCodes.Status201Created);
     }
     [HttpPatch("{noteId}")]
-    public async Task<IActionResult> GetNote(long noteId, [FromBody] UpdateNoteDto body)
+    public async Task<IActionResult> UpdateNote(long noteId, [FromBody] UpdateNoteDto body)
     {
         await noteService.UpdateNote(noteId, body.Title, body.Content, User.GetUserId());
-        return StatusCode(StatusCodes.Status201Created);
+        return StatusCode(StatusCodes.Status204NoContent);
     }
     [HttpDelete("{noteId}")]
     public async Task<IActionResult> DeleteNote(long noteId)
     {
-        var note = await noteService.GetNote(User.GetUserId(), noteId);
-        return StatusCode(StatusCodes.Status200OK);
+        await noteService.DeleteNote(User.GetUserId(), noteId);
+        return StatusCode(StatusCodes.Status204NoContent);
     }
 }
 

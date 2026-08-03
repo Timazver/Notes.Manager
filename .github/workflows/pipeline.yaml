@@ -25,9 +25,9 @@ jobs:
         run: dotnet build --no-incremental
       - name: Run test
         run: |
-          dotnet restore
-          dotnet build --configuration Release --no-restore
-          dotnet test --no-build
+          dotnet restore Tests/Notes.Manager.IntegrationTests/Notes.Manager.IntegrationTests.csproj
+          dotnet build Tests/Notes.Manager.IntegrationTests/Notes.Manager.IntegrationTests.csproj --configuration Release --no-restore
+          dotnet test Tests/Notes.Manager.IntegrationTests/Notes.Manager.IntegrationTests.csproj --configuration Release --no-build --no-restore
   build-image:
     needs: verify
     runs-on: ubuntu-latest
@@ -99,7 +99,6 @@ jobs:
           SHORT_SHA="${GITHUB_SHA::7}"
           ssh deployer@${{ env.VPS_ADDRESS }} \
           "${{ secrets.GHCR_PAT }} sha-${SHORT_SHA}"
-
 
 
 

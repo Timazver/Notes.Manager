@@ -35,4 +35,11 @@
       <Content Include=".github\workflows\pipeline.yaml" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Remove="Tests\**\*.cs" />
+        <Content Remove="Tests\**" />
+        <EmbeddedResource Remove="Tests\**" />
+        <None Remove="Tests\**" />
+    </ItemGroup>
+
 </Project>
