@@ -18,21 +18,19 @@ NotesManager — веб-API для управления заметками, ре
 Данные администратора не хранятся в исходном коде или `appsettings.json`. Их необходимо передавать через переменные
 окружения:
 
-| Параметр    | Переменная окружения        | Описание               |
-|-------------|-----------------------------|------------------------|
-| `firstName` | `AdminBootstrap__FirstName` | Имя администратора     |
-| `lastName`  | `AdminBootstrap__LastName`  | Фамилия администратора |
-| `email`     | `AdminBootstrap__Email`     | Email для входа        |
-| `password`  | `AdminBootstrap__Password`  | Пароль администратора  |
+| Параметр    | Переменная окружения | Описание               |
+|-------------|----------------------|------------------------|
+| `firstName` | `ADMIN_FIRST_NAME`   | Имя администратора     |
+| `lastName`  | `ADMIN_LAST_NAME`    | Фамилия администратора |
+| `email`     | `ADMIN_EMAIL`        | Email для входа        |
+| `password`  | `ADMIN_PASSWORD`     | Пароль администратора  |
 
-Двойное подчёркивание (`__`) используется .NET для разделения секции
-`AdminBootstrap` и имени параметра.
 
 ### macOS и Linux
 
 ```bash
-export ADMIN_FIRST_NAME="Admin"
-export ADMIN_LAST_NAMELastName="User"
+export ADMIN_FIST_NAME="Admin"
+export ADMIN_LAST_NAME="User"
 export ADMIN_EMAIL="admin@example.com"
 export ADMIN_PASSWORD="change-this-password"
 

@@ -4,6 +4,7 @@ using Notes.Manager.Admin;
 using Notes.Manager.Auth;
 using Notes.Manager.Auth.Config;
 using Notes.Manager.Common;
+using Notes.Manager.Common.Exceptions;
 using Notes.Manager.Common.Extensions;
 using Notes.Manager.Infra;
 using Notes.Manager.Notes;
@@ -16,6 +17,7 @@ Env
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddProblemDetails()
     .AddExceptionHandler<GlobalExceptionHandler>()
     .AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(DatabaseConnectionStringBuilder.Build(builder.Configuration)))
@@ -27,8 +29,9 @@ builder.Services
     .AddControllers();
 
 var app = builder.Build();
-// app.UseExceptionHandler();
+app.UseExceptionHandler();
 app.MapControllers();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.Run();
@@ -42,3 +45,5 @@ static JwtOptions BuildJwtOptionsFromEnv(IConfiguration configuration)
         int.Parse(configuration.GetRequiredEnv("JWT_EXPIRATION"))
     );
 }
+
+public partial class Program { }
